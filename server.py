@@ -12,7 +12,7 @@ async def main():
     register_onboarding_tool(mcp)
 
     # Setup transport
-    transport = StreamableHTTPServerTransport()
+    transport = StreamableHTTPServerTransport(mcp_session_id="employee-automation")
 
     async with transport.connect():
         await mcp.run_streamable_http_async()
