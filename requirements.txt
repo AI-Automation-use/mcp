@@ -2,3 +2,4 @@ mcp
 uvicorn
 httpx
 pydantic
+openai
