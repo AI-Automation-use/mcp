@@ -3,22 +3,23 @@ from mcp.types import TextContent
 
 def register_email_tool(mcp):
     @mcp.tool()
-    def generate_email_id(first_name: str, last_name: str) -> TextContent:
-        """Generate official email ID from first and last name"""
+    def generate_email_id(employee_id: str) -> TextContent:
+        """Generate official email ID using Employee ID"""
         try:
-            print(f"Calling email generation API for {first_name} {last_name}...")
+            print(f"Calling email generation API for Employee ID: {employee_id}...")
 
             response = httpx.post(
                 "https://email-creation.azurewebsites.net/api/generate_email",
-                json={"first_name": first_name, "last_name": last_name},
-                timeout=10000
+                json={"employee_ids": [employee_id]},
+                timeout=10  # 10 seconds is sufficient
             )
             response.raise_for_status()
 
-            email = response.json().get("email_id", "No email returned")
+            emails = response.json().get("generated_emails", [])
+            email = emails[0] if emails else "No email returned"
             print(f"Got email: {email}")
 
-            return TextContent(type="text", text=email)  
+            return TextContent(type="text", text=email)
 
         except httpx.TimeoutException:
             return TextContent(type="text", text="Timeout: API did not respond in time")
